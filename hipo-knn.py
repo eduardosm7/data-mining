@@ -7,8 +7,8 @@
 import pandas
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn import tree
 from sklearn.preprocessing import LabelEncoder
+from sklearn import neighbors
 
 # Fazendo o carregamento dos dados diretamente do UCI Machine Learning
 url = "https://archive.ics.uci.edu/ml/machine-learning-databases/" \
@@ -32,16 +32,20 @@ dataset.replace(to_replace=r"negative\.\|\d*",
                 value="negative",
                 regex=True,
                 inplace=True)
-dataset.replace(to_replace=r"T3 toxic\.\|\d*",
-                value="T3 toxic",
+dataset.replace(to_replace=r"primary hypothyroid\.\|\d*",
+                value="primary hypothyroid",
                 regex=True,
                 inplace=True)
-dataset.replace(to_replace=r"goitre\.\|\d*",
-                value="goitre",
+dataset.replace(to_replace=r"compensated hypothyroid\.\|\d*",
+                value="compensated hypothyroid",
                 regex=True,
                 inplace=True)
-dataset.replace(to_replace=r"hyperthyroid\.\|\d*",
-                value="hyperthyroid",
+dataset.replace(to_replace=r"secondary hypothyroid\.\|\d*",
+                value="secondary hypothyroid",
+                regex=True,
+                inplace=True)
+dataset.replace(to_replace=r"hypothyroid\.\|\d*",
+                value="hypothyroid",
                 regex=True,
                 inplace=True)
 
@@ -59,8 +63,6 @@ cols = dataset.columns.tolist()
 cols.remove("class")
 cols.append("class")
 dataset = dataset[cols]
-
-print(cols)
 
 # Substitui outlier da idade pela mediana
 median = dataset.loc[dataset['age'] <= 120, 'age'].median()
@@ -98,44 +100,52 @@ Y = dataset['class']
 
 params = [
     {
-        "criterion": "gini",
-        "max_depth": None,
+        "metric": "manhattan",
+        "n_neighbors": 7
     },
     {
-        "criterion": "gini",
-        "max_depth": 5,
+        "metric": "manhattan",
+        "n_neighbors": 123
     },
     {
-        "criterion": "gini",
-        "max_depth": 8,
+        "metric": "manhattan",
+        "n_neighbors": 333
     },
     {
-        "criterion": "gini",
-        "max_depth": 12,
+        "metric": "euclidean",
+        "n_neighbors": 7
     },
     {
-        "criterion": "gini",
-        "max_depth": 3,
+        "metric": "euclidean",
+        "n_neighbors": 123
     },
     {
-        "criterion": "entropy",
-        "max_depth": 1,
+        "metric": "euclidean",
+        "n_neighbors": 333
     },
     {
-        "criterion": "entropy",
-        "max_depth": 5,
+        "metric": "chebyshev",
+        "n_neighbors": 7
     },
     {
-        "criterion": "entropy",
-        "max_depth": 7,
+        "metric": "chebyshev",
+        "n_neighbors": 123
     },
     {
-        "criterion": "entropy",
-        "max_depth": 12,
+        "metric": "chebyshev",
+        "n_neighbors": 333
     },
     {
-        "criterion": "entropy",
-        "max_depth": 3,
+        "metric": "minkowski",
+        "n_neighbors": 7
+    },
+    {
+        "metric": "minkowski",
+        "n_neighbors": 123
+    },
+    {
+        "metric": "minkowski",
+        "n_neighbors": 333
     },
 ]
 
@@ -146,9 +156,8 @@ X_train, X_test, y_train, y_test = train_test_split(X,
                                                     random_state=10)
 
 for param in params:
-    clf = tree.DecisionTreeClassifier(criterion=param["criterion"],
-                                      max_depth=param["max_depth"],
-                                      random_state=10)
+    clf = neighbors.KNeighborsClassifier(metric=param["metric"],
+                                         n_neighbors=param["n_neighbors"])
 
     clf = clf.fit(X_train, y_train)
 
@@ -156,13 +165,3 @@ for param in params:
 
     print("Acuracia de trainamento clf: %0.3f" % clf.score(X_train, y_train))
     print("Acuracia de teste clf: %0.3f" % clf.score(X_test, y_test))
-
-    print("Profundidade da arvore criada: " + str(clf.tree_.max_depth))
-
-print(dataset.shape)
-print(dataset.describe())
-
-dotfile = open("hiper.dot", 'w')
-tree.export_graphviz(clf, out_file=dotfile, feature_names=dataset.columns[:-1])
-dotfile.close()
-print("Arvore de decisao gerada no diretorio!")

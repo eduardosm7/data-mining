@@ -100,39 +100,47 @@ params = [
         "n_neighbors": 7
     },
     {
-        "metric": "euclidean",
-        "n_neighbors": 7
-    },
-    {
-        "metric": "chebyshev",
-        "n_neighbors": 7
-    },
-    {
-        "metric": "minkowski",
-        "n_neighbors": 7
-    },
-    {
-        "metric": "euclidean",
-        "n_neighbors": 9
-    },
-    {
         "metric": "manhattan",
         "n_neighbors": 123
     },
     {
-        "metric": "chebyshev",
-        "n_neighbors": 23
+        "metric": "manhattan",
+        "n_neighbors": 333
     },
     {
         "metric": "euclidean",
-        "n_neighbors": 19
+        "n_neighbors": 7
     },
     {
-        "metric": "minkowski",
-        "n_neighbors": 101
+        "metric": "euclidean",
+        "n_neighbors": 123
+    },
+    {
+        "metric": "euclidean",
+        "n_neighbors": 333
     },
     {
         "metric": "chebyshev",
+        "n_neighbors": 7
+    },
+    {
+        "metric": "chebyshev",
+        "n_neighbors": 123
+    },
+    {
+        "metric": "chebyshev",
+        "n_neighbors": 333
+    },
+    {
+        "metric": "minkowski",
+        "n_neighbors": 7
+    },
+    {
+        "metric": "minkowski",
+        "n_neighbors": 123
+    },
+    {
+        "metric": "minkowski",
         "n_neighbors": 333
     },
 ]
