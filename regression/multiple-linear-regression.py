@@ -26,15 +26,9 @@ print(dataset.shape)
 print("Apresentando o tipo das colunas gerado pelo read_csv")
 print(dataset.dtypes)
 
-dataset = dataset.drop(columns=['Model Name'])
-dataset = dataset.drop(columns=['ERP'])
-dataset = dataset.drop(columns=['vendor name'])
-
-print("Apresentando o shape dos dados (dimenssoes)")
-print(dataset.shape)
-
-print("Apresentando o tipo das colunas gerado pelo read_csv")
-print(dataset.dtypes)
+dataset.drop(columns=['Model Name'], inplace=True)
+dataset.drop(columns=['ERP'], inplace=True)
+dataset.drop(columns=['vendor name'], inplace=True)
 
 print(dataset.corr())
 
@@ -73,21 +67,18 @@ model.fit(X_train,y_train)
 # Make predictions using the testing set
 hardware_y_pred = model.predict(X_test)
 
-# The coefficients
-print('Coefficients: \n', model.coef_)
-
 # The mean squared error
-print("Root Mean squared error: %.2f"
+print("\nRoot Mean squared error: %.2f"
       % sqrt(mean_squared_error(y_test, hardware_y_pred)))
 
 # Explained variance score: 1 is perfect prediction
 print('Variance score: %.2f' % r2_score(y_test, hardware_y_pred))
 
 # Plot outputs
-plt.scatter(y_test, hardware_y_pred,  color='black')
+plt.scatter(y_test, hardware_y_pred,  color='red')
 #plt.plot(X_test, hardware_y_pred, color='blue', linewidth=3)
 
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=4)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], lw=4)
 
 
 plt.xticks(())

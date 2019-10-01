@@ -12,27 +12,26 @@ import seaborn as sns
 
 
 # Fazendo o carregamento dos dados diretamente do UCI Machine Learning
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/cpu-performance/machine.data"
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/" \
+      "cpu-performance/machine.data"
 
 # Definindo o nome de cada coluna dos dados
-names = ['vendor name','Model Name','MYCT','MMIN','MMAX','CACH','CHMIN','CHMAX','PRP','ERP']
+names = ['vendor name','Model Name','MYCT','MMIN','MMAX','CACH','CHMIN',
+         'CHMAX','PRP','ERP']
 dataset = pandas.read_csv(url, names=names)
 
-print("Apresentando o shape dos dados (dimenssoes)")
+print("Descrevendo a base de dados")
+print(dataset.describe())
+
+print("")
 print(dataset.shape)
-
-print("Apresentando o tipo das colunas gerado pelo read_csv")
+print("")
 print(dataset.dtypes)
+print("")
 
-dataset = dataset.drop(columns=['Model Name'])
-dataset = dataset.drop(columns=['ERP'])
-dataset = dataset.drop(columns=['vendor name'])
-
-print("Apresentando o shape dos dados (dimenssoes)")
-print(dataset.shape)
-
-print("Apresentando o tipo das colunas gerado pelo read_csv")
-print(dataset.dtypes)
+dataset.drop(columns=['Model Name'], inplace=True)
+dataset.drop(columns=['ERP'], inplace=True)
+dataset.drop(columns=['vendor name'], inplace=True)
 
 print(dataset.corr())
 
@@ -41,7 +40,8 @@ X = dataset.values[:,:-1]
 Y = dataset.values[:,-1]
 
 #Split data into training an test sets
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, 
+                                                    random_state=0)
 
 #features
 hardware_X_train = X_train[:,2:3]
@@ -58,18 +58,15 @@ regr.fit(hardware_X_train, hardware_y_train)
 # Make predictions using the testing set
 hardware_y_pred = regr.predict(hardware_X_test)
 
-# The coefficients
-print('Coefficients: \n', regr.coef_)
-
 # The mean squared error
-print("Root Mean squared error: %.2f"
+print("\nRoot Mean squared error: %.2f"
       % sqrt(mean_squared_error(hardware_y_test, hardware_y_pred)))
 
 # Explained variance score: 1 is perfect prediction
 print('Variance score: %.2f' % r2_score(hardware_y_test, hardware_y_pred))
 
 # Plot outputs
-plt.scatter(hardware_X_test, hardware_y_test,  color='black')
+plt.scatter(hardware_X_test, hardware_y_test,  color='red')
 plt.plot(hardware_X_test, hardware_y_pred, color='blue', linewidth=3)
 
 plt.xticks(())
