@@ -15,15 +15,20 @@ dataset = pd.read_csv('https://archive.ics.uci.edu/ml/machine-learning-' \
 print("Apresentando o shape dos dados (dimenssoes)")
 print(dataset.shape)
 
-print("Visualizando o conjunto inicial (head) dos " \
+print("")
+print(dataset[['Product_Code', 'W0', 'W51', 'MIN', 'MAX', 'Normalized 0',
+               'Normalized 51']].dtypes)
+
+print("\nVisualizando o conjunto inicial (head) dos " \
       "dados, ou mais claramente, os 20 primeiros registros (head(20))")
 print(dataset.head(20))
 
-print("Conhecendo os dados estatisticos dos dados carregados (describe)")
+print("\nConhecendo os dados estatisticos dos dados carregados (describe)")
 print(dataset.describe())
 
-print("Nomes das colunas")
+print("\nNomes das colunas")
 print(dataset.columns)
+
 # drop 'Product_Code' e W1, W2... W50, W51
 columns_to_drop = ['Product_Code']
 for n in range(0, 52):
@@ -35,25 +40,17 @@ X = dataset.values
 
 wcss = []
 wcss2 = []
-maxit = 10
+maxit = 11
  
 for i in range(1, maxit):
     kmeans = KMeans(n_clusters = i, init = 'random')
     kmeans2 = KMeans(n_clusters = i)
     kmeans.fit(X)
     kmeans2.fit(X)
-    
-    print(i,kmeans.inertia_, kmeans2.inertia_)
-    
     wcss.append(kmeans.inertia_)
     wcss2.append(kmeans2.inertia_)
-
-plt.plot(range(1, maxit), wcss, 'bo', range(1, maxit), wcss2, 'g-', 
-         scalex=True)
-
-plt.title('O Metodo Elbow')
-plt.xlabel('Numero de Clusters')
-plt.ylabel('WSS') #within cluster sum of squares
+plt.plot(range(1, maxit), wcss, 'bo', c='red') 
+plt.plot(range(1, maxit), wcss2, 'g-', c='blue')
 plt.show()
 
 X = dataset.values
@@ -64,6 +61,16 @@ kmeans = KMeans(n_clusters=3)
 kmeans = kmeans.fit(X)
 # Predicting the clusters
 labels = kmeans.predict(X)
+print(labels)
+
+colors = []
+for label in labels:
+    if label == 0:
+        colors.append('orange')
+    elif label == 1:
+        colors.append('green')
+    else:
+        colors.append('cyan')
 
 # Getting the cluster centers
 C = kmeans.cluster_centers_
@@ -72,22 +79,10 @@ plt.rcParams['figure.figsize'] = (16, 9)
 
 fig = plt.figure()
 ax = Axes3D(fig)
-plt.title('K-Means')
 
-ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=labels, s=150)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=colors, s=150)
 ax.scatter(C[:, 0], C[:, 1], C[:, 2], marker='*', c='red', s=1000)
-
 plt.show()
-
-print("Padrao de vendas dos clusters")
-for i in [0, 1, 2]:
-    
-    plt.plot(range(1, 53), C[i, 2:], 'bo')
-    
-    plt.title('Vendas do Centroide ' + str(i+1))
-    plt.xlabel('Semanas')
-    plt.ylabel('Produtos vendidos') #within cluster sum of squares
-    plt.show()
 
 X = dataset.values
 
@@ -99,17 +94,42 @@ Hclustering.fit(X)
 # Getting the cluster labels
 labels = Hclustering.fit_predict(X)
 
+colors = []
+for label in labels:
+    if label == 0:
+        colors.append('cyan')
+    elif label == 1:
+        colors.append('green')
+    else:
+        colors.append('orange')
+
 silhouette_avg = silhouette_score(X, labels)
 print("For n_clusters =", 3, 
       "The average silhouette_score is :", silhouette_avg)
-
-print(Counter(labels).keys())
-print(Counter(labels).values())
 
 fig = plt.figure()
 ax = Axes3D(fig)
 plt.title('Agglomerative clustering')
 
-ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=labels, s=150)
+ax.scatter(X[:, 0], X[:, 1], X[:, 2], c=colors, s=150)
 
 plt.show()
+
+print("Padrao de vendas dos clusters")
+for i in range(3):
+    
+    color = ''
+    
+    if i == 0:
+        color = 'orange'
+    elif i == 1:
+        color = 'green'
+    else:
+        color = 'cyan'
+    
+    plt.plot(range(1, 53), C[i, 2:], 'bo', c=color)
+    
+    plt.title('Cluster ' + str(i+1))
+    plt.xlabel('Semanas')
+    plt.ylabel('Vendas') #within cluster sum of squares
+    plt.show()
