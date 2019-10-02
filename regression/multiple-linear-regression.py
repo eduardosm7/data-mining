@@ -14,11 +14,16 @@ from sklearn.preprocessing import StandardScaler
 
 
 # Fazendo o carregamento dos dados diretamente do UCI Machine Learning
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/cpu-performance/machine.data"
+url = "https://archive.ics.uci.edu/ml/machine-learning-databases/" \
+      "cpu-performance/machine.data"
 
 # Definindo o nome de cada coluna dos dados
-names = ['vendor name','Model Name','MYCT','MMIN','MMAX','CACH','CHMIN','CHMAX','PRP','ERP']
+names = ['vendor name','Model Name','MYCT','MMIN','MMAX','CACH','CHMIN',
+         'CHMAX','PRP','ERP']
 dataset = pandas.read_csv(url, names=names)
+
+print("Descrevendo a base de dados")
+print(dataset.describe())
 
 print("Apresentando o shape dos dados (dimenssoes)")
 print(dataset.shape)
@@ -38,7 +43,8 @@ Y = dataset.iloc[:,-1]
 
 
 #Split data into training an test sets
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, 
+                                                    random_state=0)
 
 
 scaler = StandardScaler()
